@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  gitlab-compose:
+    image: gitlab/gitlab-ce:latest
+    container_name: gitlab-compose
+    hostname: 'gitlab.example.com'
+    volumes:
+      - '$GITLAB_HOME/gitlab/config:/etc/gitlab'
+      - '$GITLAB_HOME/gitlab/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/gitlab/data:/var/opt/gitlab'
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    networks:
+      - gitlab-network
+
+
+  gitlab-runner1:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-compose
+    hostname: gitlab-runner-compose
+    volumes:
+      - '/Users/Shared/gitlab-runner/config:/etc/gitlab-runner'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    privileged: false
+    networks:
+      - gitlab-network
+
+
+networks:
+  gitlab-network:
+    name: gitlab-network
