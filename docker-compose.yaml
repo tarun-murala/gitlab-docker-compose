@@ -1,10 +1,16 @@
 version: '3.7'
-
+# export GITLAB_HOME=/Users/tarun.murala/DockerVolumes/gitlab/
+# Sample (Your IP) entry in /private/etc/hosts
+# 192.168.0.110   gitlab.example.com
 services:
   gitlab-compose:
     image: gitlab/gitlab-ce:latest
     container_name: gitlab-compose
     hostname: 'gitlab.example.com'
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "3"
     volumes:
       - '$GITLAB_HOME/gitlab/config:/etc/gitlab'
       - '$GITLAB_HOME/gitlab/logs:/var/log/gitlab'
@@ -24,6 +30,10 @@ services:
     image: gitlab/gitlab-runner:latest
     container_name: gitlab-runner-compose
     hostname: gitlab-runner-compose
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "3"
     volumes:
       - '/Users/Shared/gitlab-runner/config:/etc/gitlab-runner'
       - '/var/run/docker.sock:/var/run/docker.sock'
